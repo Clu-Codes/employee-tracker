@@ -1,19 +1,23 @@
+DROP DATABASE IF EXISTS company_db;
+CREATE DATABASE company_db;
+USE company_db;
+
 CREATE TABLE department (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(30),
-)
+    id INT PRIMARY KEY,
+    department_name VARCHAR(30)
+);
 
 CREATE TABLE role (
-    id INTEGER PRIMARY KEY,
+    id INT PRIMARY KEY,
     title VARCHAR(30),
     salary DECIMAL NOT NULL,
-    department_id INTEGER UNSIGNED NOT NULL
-)
+    department_id INT UNSIGNED NOT NULL
+);
 
 CREATE TABLE employee (
-    id INTEGER PRIMARY KEY,
+    id INT PRIMARY KEY,
     first_name VARCHAR(30),
     last_name VARCHAR(30),
-    role_id INTEGER UNSIGNED NOT NULL,
-    manager_id INTEGER UNSIGNED 
-)
+    role_id INT UNSIGNED NOT NULL,
+    manager_id INT UNSIGNED 
+);
