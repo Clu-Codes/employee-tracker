@@ -2,8 +2,6 @@ DROP DATABASE IF EXISTS company_db;
 CREATE DATABASE company_db;
 USE company_db;
 
--- employeeArr = [];
-
 CREATE TABLE department (
     id INT NOT NULL AUTO_INCREMENT,
     PRIMARY KEY (id),
@@ -28,5 +26,3 @@ CREATE TABLE employee (
     FOREIGN KEY (role_id) REFERENCES role (id),
     manager_id INT UNSIGNED 
 );
-
--- employeeArr.push()

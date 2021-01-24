@@ -15,7 +15,7 @@ function promptUser() {
         type: 'list',
         name: 'actionsMenu',
         message: 'What would you like to do?',
-        choices: ['View all employees', 'View all departments', 'View all roles', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee', 'View by department', 'Exit']
+        choices: ['View all employees', 'View all departments', 'View all roles', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee', 'View by department', 'View cost by department', 'Exit']
         })
         .then(choices => {
             switch (choices['actionsMenu']) {
@@ -42,6 +42,9 @@ function promptUser() {
                     break;
                 case 'View by department':
                     empByDepartment();
+                    break;
+                case 'View cost by department':
+                    costPerDepartment();
                     break;
                 case 'Exit':
                     exit();
@@ -139,7 +142,9 @@ function addDepartment() {
                     {
                         department_name: `${dataInput.newDepartment}`
                     },
-                function() {
+                function(err, res) {
+                    if (err) throw err;
+                    console.log(res);
                     allDepartments();
                 }
             );
@@ -243,11 +248,24 @@ function empByDepartment() {
         ON role.department_id = department.id`,
         function(err, res) {
             if (err) throw err;
-            // console.log(res);
             console.table(res);
             promptUser();
         }
     );    
+}
+function costPerDepartment() {
+    connection.query(
+        `SELECT department.department_name AS Department, SUM(role.salary) AS Cost
+        FROM department
+        INNER JOIN role 
+        ON role.department_id = department.id
+        GROUP BY department.department_name;`,
+        function(err, res) {
+            if (err) throw err;
+            console.table(res);
+            promptUser();
+        }
+    )
 }
 
 const exit = () => {
