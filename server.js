@@ -1,8 +1,5 @@
 const inquirer = require('inquirer');
-// const db = require('./db/databse');
 const mysql = require('mysql2');
-// const Employees = require('./lib/employee');
-
 // Connection to mySQL server for Inquirer to call upon
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -18,7 +15,7 @@ function promptUser() {
         type: 'list',
         name: 'actionsMenu',
         message: 'What would you like to do?',
-        choices: ['View all employees', 'View all departments', 'View all roles', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee', 'Exit']
+        choices: ['View all employees', 'View all departments', 'View all roles', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee', 'View by department', 'Exit']
         })
         .then(choices => {
             switch (choices['actionsMenu']) {
@@ -43,6 +40,9 @@ function promptUser() {
                 case 'Update an employee':
                     updateEmployee();
                     break;
+                case 'View by department':
+                    empByDepartment();
+                    break;
                 case 'Exit':
                     exit();
             }
@@ -51,8 +51,11 @@ function promptUser() {
 
 const allEmployees = () => {
     connection.query(
-        `SELECT * FROM employee`,
+        `SELECT * FROM employee
+        INNER JOIN (role, department)
+        ON (role.id = employee.role_id AND department.id = role.department_id)`,
         function(err, result) {
+            if (err) throw err;
             console.log('\n')
             console.table(result);
             promptUser();
@@ -108,9 +111,7 @@ function addRole() {
             }
         ])  
         .then(dataInput => {
-            console.log('======HIIIII=====', dataInput);
             connection.query(
-                // ? is a query parament that corresponds to the values within the objects
                 'INSERT INTO role SET title = ?, salary = ?, department_id = ?',
                 [dataInput.newRole, dataInput.salary, dataInput.departmentId],
                 function(err, res) {
@@ -134,7 +135,6 @@ function addDepartment() {
         })
         .then(dataInput => {
             connection.query(
-                // ? is a query parament that corresponds to the values within the objects
                 'INSERT INTO department SET ?',
                     {
                         department_name: `${dataInput.newDepartment}`
@@ -231,6 +231,23 @@ function updateEmployee() {
                 }
             )
         })
+};
+
+function empByDepartment() {
+    connection.query(
+        `SELECT CONCAT(employee.first_name, ' ', employee.last_name) AS name, department.department_name AS department
+        FROM employee
+        INNER JOIN role 
+        ON role.id = employee.role_id
+        INNER JOIN department
+        ON role.department_id = department.id`,
+        function(err, res) {
+            if (err) throw err;
+            // console.log(res);
+            console.table(res);
+            promptUser();
+        }
+    );    
 }
 
 const exit = () => {
