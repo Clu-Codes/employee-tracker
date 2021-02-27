@@ -18,7 +18,8 @@ This application is under the MIT license.
 
 ## Video & Screenshot
 https://drive.google.com/file/d/1s3k9rOBU0MyCrPXW8fEKiSFJMTxTLv6t/view
-![Example of the Employee Tracker's CLI](./utils/employee_tracker.png)
+
+![Example of the Employee Tracker's CLI](./utils/Employee_tracker.png)
 
 ## Questions
 Github: https://www.github.com/clu-codes
